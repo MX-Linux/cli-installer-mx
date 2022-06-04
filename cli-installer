@@ -653,7 +653,7 @@ chroot /media/$rdrv adduser --force-badname $name;;
 esac
 echo ''
 yn $"Setup root account? (y/N)"
-    if [[ "$ans" -eq 1 ]]; then
+    if [[ "$ans" -eq 0 ]]; then
         chroot /media/$rdrv passwd -l root;
     else
         echo $"Type your Password for root: "
