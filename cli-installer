@@ -170,6 +170,14 @@ done
 }
 
 getesp() {
+echo "Valid esp partitions"
+
+disks=$(LANG=c lsblk -lo NAME,TYPE |grep disk | cut -d" " -f1)
+
+for i in $disks; do
+	partition-info find-esps=$i
+done
+
 ans=1
 while [[ "$ans" -ne 0 ]]
 do
