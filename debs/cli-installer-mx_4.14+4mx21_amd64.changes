@@ -1,0 +1,33 @@
+Format: 1.8
+Date: Fri, 03 Jun 2022 23:45:12 -0400
+Source: cli-installer-mx
+Binary: cli-installer-mx
+Architecture: source all
+Version: 4.14+4mx21
+Distribution: mx
+Urgency: medium
+Maintainer: dolphinoracle <dolphinoracle@gmail.com>
+Changed-By: Dolphin Oracle <dolphinoracle@gmail.com>
+Description:
+ cli-installer-mx - Script to install mx to hard drive via cli.
+Changes:
+ cli-installer-mx (4.14+4mx21) mx; urgency=medium
+ .
+   * list esp partitions when asking user to choose one
+   * allow not setting up root account
+   * clear /etc/live
+Checksums-Sha1:
+ 93fb747348caafdc95acd1b298df137a06c8bb92 655 cli-installer-mx_4.14+4mx21.dsc
+ a0e23b60bc87507ba26ddad4cac2a2c2e59f4661 66116 cli-installer-mx_4.14+4mx21.tar.xz
+ ad5082de326053e18c0b4fb93fb345b5de5417dd 48616 cli-installer-mx_4.14+4mx21_all.deb
+ 22bd7eaeda9785b20e7484c320e996dcd2c8b891 5700 cli-installer-mx_4.14+4mx21_amd64.buildinfo
+Checksums-Sha256:
+ 8fe620c6b6e10fee8e1db739f8a7a53b3c4656e4df5818549c5f6c9f47e4426a 655 cli-installer-mx_4.14+4mx21.dsc
+ c4e648b4219a4cd48a21eea77dcce86cd62848347687296d6a3ab85a3c0b45f0 66116 cli-installer-mx_4.14+4mx21.tar.xz
+ c66d6eecb02a84765f32f8b3911c22f44fd9d495a0f69c665e30ae6a34a19f8f 48616 cli-installer-mx_4.14+4mx21_all.deb
+ 04856495ade400ac88a0ff06ae180609bc8f6a5d0b7ac061f5d5dbd4a6730e8e 5700 cli-installer-mx_4.14+4mx21_amd64.buildinfo
+Files:
+ 4d315748be3e4321a1df1bb9ea6264a5 655 system optional cli-installer-mx_4.14+4mx21.dsc
+ b74eda70e5560f0d8de7298745985459 66116 system optional cli-installer-mx_4.14+4mx21.tar.xz
+ 73a680432edf9acaa2bba393dffcda35 48616 system optional cli-installer-mx_4.14+4mx21_all.deb
+ 3a6249e2523ed961cb0ad75bc92a7097 5700 system optional cli-installer-mx_4.14+4mx21_amd64.buildinfo
