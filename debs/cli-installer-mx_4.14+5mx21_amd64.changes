@@ -1,0 +1,31 @@
+Format: 1.8
+Date: Sat, 04 Jun 2022 09:16:59 -0400
+Source: cli-installer-mx
+Binary: cli-installer-mx
+Architecture: source all
+Version: 4.14+5mx21
+Distribution: mx
+Urgency: medium
+Maintainer: dolphinoracle <dolphinoracle@gmail.com>
+Changed-By: Dolphin Oracle <dolphinoracle@gmail.com>
+Description:
+ cli-installer-mx - Script to install mx to hard drive via cli.
+Changes:
+ cli-installer-mx (4.14+5mx21) mx; urgency=medium
+ .
+   * correct root account question toggle
+Checksums-Sha1:
+ 33cec864b29508493e64a21650195db251de24cf 655 cli-installer-mx_4.14+5mx21.dsc
+ 5d6487a2b4e183b2a9a53ff0d2509e1a8c07bc22 66120 cli-installer-mx_4.14+5mx21.tar.xz
+ f499d9c361ef801dea68c6ffee6324a9ebfa9bd1 48680 cli-installer-mx_4.14+5mx21_all.deb
+ 30af53b90aa4db797ff3cc09215e90e9cad4fd71 5700 cli-installer-mx_4.14+5mx21_amd64.buildinfo
+Checksums-Sha256:
+ 2753ddc332b10f2ab3dcb85eeb628555128b726f417dfec96de7ce7a7ae3ddc5 655 cli-installer-mx_4.14+5mx21.dsc
+ f51a10762582e54541d01f68d931541354a359b85cfcd8065c2de929ccbb9bde 66120 cli-installer-mx_4.14+5mx21.tar.xz
+ 0efae4acf91bd8033b8f5f4bfeabc69bc140f3939dddb0632da0b75718f2ee82 48680 cli-installer-mx_4.14+5mx21_all.deb
+ 321361553c89a3f1630c67907320db8644644f51bbaa362c74b0c883061bb2bd 5700 cli-installer-mx_4.14+5mx21_amd64.buildinfo
+Files:
+ 93c8a9264b291ab9927d0b9a40661b72 655 system optional cli-installer-mx_4.14+5mx21.dsc
+ cb345e5087c7bc549ae94ba18f1189a1 66120 system optional cli-installer-mx_4.14+5mx21.tar.xz
+ 82dddfc056b020fa90346c2368621315 48680 system optional cli-installer-mx_4.14+5mx21_all.deb
+ fcc3108971748f145efee366d814446e 5700 system optional cli-installer-mx_4.14+5mx21_amd64.buildinfo
