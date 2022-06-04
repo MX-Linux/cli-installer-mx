@@ -1,3 +1,9 @@
+cli-installer-mx (4.14+4mx21) mx; urgency=medium
+
+  * list esp partitions when asking user to choose one
+
+ -- Dolphin Oracle <dolphinoracle@gmail.com>  Fri, 03 Jun 2022 23:45:12 -0400
+
 cli-installer-mx (4.14+3mx21) mx; urgency=medium
 
   * use $DISTRO variable more often 
