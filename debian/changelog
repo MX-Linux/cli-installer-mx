@@ -1,3 +1,9 @@
+cli-installer-mx (4.14+3mx21) mx; urgency=medium
+
+  * use $DISTRO variable more often 
+
+ -- Dolphin Oracle <dolphinoracle@gmail.com>  Fri, 03 Jun 2022 23:22:19 -0400
+
 cli-installer-mx (4.14+2mx21) mx; urgency=medium
 
   * adjust depends 
