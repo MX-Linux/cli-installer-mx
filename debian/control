@@ -8,6 +8,8 @@ Homepage: https://gitlab.com/antiX-Linux/cli-installer-antix
 
 Package: cli-installer-mx
 Architecture: all 
-Replaces: cli-installer-core-antix, cli-installer-base-antix, cli-installer-full-antix 
+Replaces: cli-installer-core-antix, cli-installer-base-antix, cli-installer-full-antix, cli-installer-antix
 Depends: bash, rsync, partition-info
 Description: Script to install mx to hard drive via cli.
+
+

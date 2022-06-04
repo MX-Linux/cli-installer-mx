@@ -1,20 +1,20 @@
 Format: 1.0
-Source: cli-installer-mx
-Binary: cli-installer-mx
+Source: cli-installer-antix
+Binary: cli-installer-antix
 Architecture: all source
-Version: 4.14+5mx21
+Version: 5.0+1mx21
 Checksums-Md5:
- 93c8a9264b291ab9927d0b9a40661b72 655 cli-installer-mx_4.14+5mx21.dsc
- 82dddfc056b020fa90346c2368621315 48680 cli-installer-mx_4.14+5mx21_all.deb
+ 6b35196cbe4daaa98d974d4c3e0ad600 660 cli-installer-antix_5.0+1mx21.dsc
+ 335909e9697cb15e98754763600dee47 4328 cli-installer-antix_5.0+1mx21_all.deb
 Checksums-Sha1:
- 33cec864b29508493e64a21650195db251de24cf 655 cli-installer-mx_4.14+5mx21.dsc
- f499d9c361ef801dea68c6ffee6324a9ebfa9bd1 48680 cli-installer-mx_4.14+5mx21_all.deb
+ 5ab139378e3827256fce979a42fd61ff020cd319 660 cli-installer-antix_5.0+1mx21.dsc
+ ac1173ffec6a67f44a36f7fa7e9e4d7b0b7d6b5b 4328 cli-installer-antix_5.0+1mx21_all.deb
 Checksums-Sha256:
- 2753ddc332b10f2ab3dcb85eeb628555128b726f417dfec96de7ce7a7ae3ddc5 655 cli-installer-mx_4.14+5mx21.dsc
- 0efae4acf91bd8033b8f5f4bfeabc69bc140f3939dddb0632da0b75718f2ee82 48680 cli-installer-mx_4.14+5mx21_all.deb
+ 262a04ad04da7ecf4d32c2ddf01bb37e048caa096a2e86d9bb7c8e0a0e3e7cde 660 cli-installer-antix_5.0+1mx21.dsc
+ 31b55165c461b13858721a21ac62eb7b694d6ea8c260cf94e339209910087129 4328 cli-installer-antix_5.0+1mx21_all.deb
 Build-Origin: Debian
 Build-Architecture: amd64
-Build-Date: Sat, 04 Jun 2022 09:18:10 -0400
+Build-Date: Sat, 04 Jun 2022 14:06:23 -0400
 Build-Tainted-By:
  merged-usr-via-aliased-dirs
  usr-local-has-libraries
