@@ -652,9 +652,14 @@ chroot /media/$rdrv adduser --force-badname $name;;
 2)chroot /media/$rdrv adduser --force-badname $name;;
 esac
 echo ''
-echo $"Type your Password for root: "
-echo ''
-setpw root
+yn $"Setup root account? (y/N)"
+    if [[ "$ans" -eq 1 ]]; then
+        chroot /media/$rdrv passwd -l root;
+    else
+        echo $"Type your Password for root: "
+        echo ''
+        setpw root
+    fi
 sed -i "s/$LIVEUSER/$name/" etc/group
 sed -i "s/$LIVEUSER/$name/" etc/gshadow
 sed -i "s/$LIVEUSER/$name/" usr/share/slim/themes/antiX/slim-install.conf 2>/dev/null
