@@ -1,36 +1,15 @@
-cli-installer-mx (5.0+5mx21) mx; urgency=medium
+cli-installer-antix (5.0+1mx21) mx; urgency=medium
 
-  * correct root account question toggle 
+  * transitional package
 
  -- Dolphin Oracle <dolphinoracle@gmail.com>  Sat, 04 Jun 2022 09:16:59 -0400
-
-cli-installer-mx (5.0+4mx21) mx; urgency=medium
-
-  * list esp partitions when asking user to choose one
-  * allow not setting up root account
-  * clear /etc/live
-
- -- Dolphin Oracle <dolphinoracle@gmail.com>  Fri, 03 Jun 2022 23:45:12 -0400
-
-cli-installer-mx (5.0+3mx21) mx; urgency=medium
-
-  * use $DISTRO variable more often 
-
- -- Dolphin Oracle <dolphinoracle@gmail.com>  Fri, 03 Jun 2022 23:22:19 -0400
-
-cli-installer-mx (5.0+2mx21) mx; urgency=medium
-
-  * adjust depends 
-  * add rc.local.cli so that cli can do its thing without gazelle-data-* 
-
- -- Dolphin Oracle <dolphinoracle@gmail.com>  Fri, 03 Jun 2022 19:01:04 -0400
  
- cli-installer-antix (5.0) unstable; urgency=medium
+cli-installer-antix (5.0) unstable; urgency=medium
 
   * updated translations
   * bump version
 
--- anticapitalista <antix@operamail.com>  Tue, 12 Oct 2021 15:16:12 +0300
+ -- anticapitalista <antix@operamail.com>  Tue, 12 Oct 2021 15:16:12 +0300
 
 cli-installer-antix (4.14) unstable; urgency=medium
 
