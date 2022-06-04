@@ -7,7 +7,7 @@ TEXTDOMAINDIR=/usr/share/locale
 TEXTDOMAIN=cli-installer
 
 #Default
-DISTR0=MX-21
+DISTR0=MX-Linux
 LIVEUSER=demo
 
 ##functions
@@ -493,7 +493,7 @@ getfs
 #We are now in $rdrv
 cd /media/$rdrv
 echo ''
-echo $"antiX will now be copied to $rdrv."
+echo $"$DISTRO will now be copied to $rdrv."
 echo ''
 yn $"Do you want to continue (No will abort the install) (n/Y)"
 echo ''
@@ -665,11 +665,12 @@ echo ''
 #/usr/sbin/live-to-installed /media/$rdrv
 #mv etc/rc.local etc/rc.local2
 mv etc/X11/xorg.conf etc/X11/xorg.conf.live 2>/dev/null
-cp usr/local/share/live-files/files/etc/rc.local etc/rc.local
+cp usr/share/antiX/rc.local.cli etc/rc.local
 cp usr/share/slim/themes/antiX/slim-install.conf etc/slim.conf 2>/dev/null
 chroot /media/$rdrv dpkg -r live-init-antix 2>/dev/null
 cp -r etc/skel/.[a-zA-Z]* home/*/ 2>/dev/null
 cp -r etc/skel/* home/*/ 2>/dev/null
+rm -R etc/live/*
 if [[ $hmtp -gt 0 ]]
   then
     if [[ $hmtp -eq 2 ]]
@@ -692,6 +693,6 @@ umount -l /media/$rdrv/sys/
 umount -l /media/$rdrv
 if [[ "$hmtp" -ne 0 ]]; then umount -l /dev/$hdrv;fi
 echo ''
-echo $"Installation of antiX finished!"
+echo $"Installation of $DISTRO finished!"
 echo ''
 echo $"Reboot computer without CD to start program. ('reboot')"
