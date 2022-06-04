@@ -1,3 +1,9 @@
+cli-installer-mx (4.14+5mx21) mx; urgency=medium
+
+  * correct root account question toggle 
+
+ -- Dolphin Oracle <dolphinoracle@gmail.com>  Sat, 04 Jun 2022 09:16:59 -0400
+
 cli-installer-mx (4.14+4mx21) mx; urgency=medium
 
   * list esp partitions when asking user to choose one
