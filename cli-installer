@@ -587,7 +587,7 @@ echo -ne "\e[36m"
 echo $"Choose which services to run"
 echo -ne "\e[0m"
 
-commnd -v sysv-rc-conf >/dev/null && (
+command -v sysv-rc-conf >/dev/null && (
     yn $"Do you want to enable/disable startup services (y/N)"
     echo ''
     if [[ $ans -eq 1 ]]; then
