@@ -122,9 +122,6 @@ driveCheck() {
         fi
     ;;
 
-    *)
-        echo $"$drive invalid. Retry"
-    ;;
     esac
     dcResult="$rpre$gdrv$gpart"
 }
