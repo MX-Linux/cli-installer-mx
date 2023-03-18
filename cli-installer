@@ -485,7 +485,7 @@ getfs
 #echo ''
 #fi
 #We are now in $rdrv
-cd /media/$rdrv
+cd /media/$rdrv || exit
 echo ''
 echo $"$DISTRO will now be copied to $rdrv."
 echo ''
