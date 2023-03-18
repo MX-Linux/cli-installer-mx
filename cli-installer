@@ -3,9 +3,6 @@
 # written by Burt Holland
 # heavily edited by anticapitalista
 
-TEXTDOMAINDIR=/usr/share/locale
-TEXTDOMAIN=cli-installer
-
 #Default
 DISTR0=MX-Linux
 LIVEUSER=demo
@@ -371,7 +368,6 @@ mkdir -p /live/aufs/dev /live/aufs/sys /live/aufs/proc
 make-fstab
 swapon -a
 # Show requirements
-kernel="-$(uname -r)"
 echo ''
 header
 echo ''
@@ -505,7 +501,7 @@ grep swap etc/fstab >> etc/fstab.new
 if [[ "$hmtp" -gt 0 ]]; then
     echo "/dev/$hdrv /home $fs2 defaults,relatime 0 2" >> etc/fstab.new
     arg1=$hdrv
-    else
+else
     arg1='xxxx'
 fi
 #echo '# Dynamic entries below' >> etc/fstab.new
