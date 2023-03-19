@@ -263,8 +263,8 @@ yn() {
 }
 
 getfs() {
-    fs1=$(blkid /dev/$rdrv | sed 's/.*TYPE="\([^"]*\)".*/\1/'
-    fs2=$(blkid /dev/$hdrv | sed 's/.*TYPE="\([^"]*\)".*/\1/'
+    fs1=$(blkid /dev/$rdrv | sed 's/.*TYPE="\([^"]*\)".*/\1/')
+    fs2=$(blkid /dev/$hdrv | sed 's/.*TYPE="\([^"]*\)".*/\1/')
 }
 
 grub_install() {
