@@ -4,7 +4,7 @@
 # heavily edited by anticapitalista
 
 #Default
-DISTR0=MX-Linux
+DISTRO=MX-Linux
 LIVEUSER=demo
 
 ##functions
