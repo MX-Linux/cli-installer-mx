@@ -3,8 +3,9 @@
 # written by Burt Holland
 # heavily edited by anticapitalista
 
-TEXTDOMAINDIR=/usr/share/locale
-TEXTDOMAIN=cli-installer
+export TEXTDOMAINDIR=/usr/share/locale
+export TEXTDOMAIN=cli-installer
+source gettext.sh
 
 #Default
 DISTRO=MX-Linux
