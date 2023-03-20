@@ -318,7 +318,7 @@ grub_install() {
 
         echo
         echo "This may take some time. Please wait...."
-        chroot /media/$rdrv grub-install $XTRA_PARMS --force-extra-removable --target=$arch-efi --efi-directory=/boot/efi --bootloader-id=$DISTR0 --recheck
+        chroot /media/$rdrv grub-install $XTRA_PARMS --force-extra-removable --target=$arch-efi --efi-directory=/boot/efi --bootloader-id=$DISTRO --recheck
     else
         echo "This may take some time. Please wait...."
         chroot /media/$rdrv grub-install --target=i386-pc --recheck --no-floppy --force /dev/$rdrv > /dev/null  2>&1
