@@ -3,7 +3,7 @@ cli-installer-mx (5.1) mx; urgency=medium
   [Adrian]
   * update btrfs formatting
   * only run apt-get to fetch packages if they aren't installed
-  * fix DIST0 typos
+  * fix DISTR0 typos
   * fix root setup question
   [dolphin oracle]
   * replace /live/aufs/dev/null with just /dev/null
