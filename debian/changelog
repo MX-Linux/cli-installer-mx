@@ -1,3 +1,15 @@
+cli-installer-mx (5.1) mx; urgency=medium
+
+  [Adrian]
+  * update btrfs formatting
+  * only run apt-get to fetch packages if they aren't installed
+  * fix DIST0 typos
+  * fix root setup question
+  [dolphin oracle]
+  * replace /live/aufs/dev/null with just /dev/null
+
+ -- Dolphin Oracle <dolphinoracle@gmail.com>  Wed, 22 Mar 2023 19:21:54 -0400
+
 cli-installer-mx (5.0+5mx21) mx; urgency=medium
 
   * correct root account question toggle 
