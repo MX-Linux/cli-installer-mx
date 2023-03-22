@@ -5,7 +5,6 @@
 
 export TEXTDOMAINDIR=/usr/share/locale
 export TEXTDOMAIN=cli-installer
-source gettext.sh
 
 #Default
 DISTRO=MX-Linux
@@ -199,12 +198,12 @@ setfs() {
     umount /dev/$1 > /live/aufs/dev/null 2>&1
     echo $"Available file systems for $1 are:"
     echo "
-    1)ext2
-    2)ext3
-    3)ext4
-    4)jfs
-    5)xfs
-    6)btrfs
+    1)ext2 
+    2)ext3 
+    3)ext4 
+    4)jfs 
+    5)xfs 
+    6)btrfs 
     7)reiserfs
     8)reiser4 "
     echo ''
