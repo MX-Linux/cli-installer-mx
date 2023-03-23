@@ -2,6 +2,7 @@ cli-installer-mx (5.2) mx; urgency=medium
 
   * set bios_legacy flag when installing to mbr
   * force choice of where to install grub 
+  * don't offer ESP if not booted via EFI
 
  -- Dolphin Oracle <dolphinoracle@gmail.com>  Thu, 23 Mar 2023 06:48:10 -0400
 
