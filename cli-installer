@@ -491,7 +491,11 @@ if [[ "$ans" -eq 0 ]]; then
     exit 0
 fi
 echo $"This may take some time. Please wait...."
-cp -a /live/aufs/* .
+if [[ $(command -v rsync) ]]; then
+    rsync -a --human-readable --no-inc-recursive --info=progress2 /live/aufs/ .
+else
+    cp -a /live/aufs/* .
+fi
 echo
 
 #set up fstab
