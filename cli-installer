@@ -29,34 +29,34 @@ title() {
     echo $"CL installer for $DISTRO"
     echo $"Version 5.5 12/01/2021"
     echo -ne "\e[0m"
-    echo ''
+    echo
 }
 
 header() {
     #echo -ne "\e[36m"
     #echo $"Requirements for minimum installation:"
     #echo -ne "\e[0m"
-    #echo ''
+    #echo
     #echo $"antiX-full: hard-disk 5.0GB  RAM 64MB"
-    #echo ''
+    #echo
     #echo $"antiX-base: hard-disk 3.5GB  RAM 48MB"
-    #echo ''
+    #echo
     #echo $"antiX-core: hard-disk 1.0GB  RAM 48MB"
-    #echo ''
+    #echo
     #echo $"antiX-net:  hard-disk 0.7GB  RAM 48MB"
-    #echo ''
+    #echo
     #echo $"Make sure you are connected to "
-    #echo ''
+    #echo
     #echo $"the net BEFORE running this installer"
-    #echo ''
+    #echo
     echo $"This installer does NOT offer the option for using a separate boot partition"
-    echo ''
+    echo
     echo $"This installer does NOT offer encryption"
-    echo ''
+    echo
     echo $"If you want the above mentioned features, use our gui installer"
-    echo ''
+    echo
     echo $"Ctrl c will abort this script"
-    echo ''
+    echo
 }
 
 help_text() {
@@ -64,21 +64,21 @@ help_text() {
     echo $"Where drive is the name of the drive $DISTRO is to be installed on."
     echo $"   For example: cli-installer sdb"
     echo $"The default is correct if the computer has only one drive."
-    echo ''
+    echo
     # tips for this version
     echo -ne "\e[36m"
     echo $"Pre-installation tips:"
     echo -ne "\e[0m"
-    echo ''
+    echo
     echo $"Set language at the boot screen by pressing F2"
     echo $"or by adding the line lang=xx where xx is your language code."
     echo $"eg lang=gr for Greek."
-    echo ''
+    echo
     echo $"Set timezone at the boot screen by pressing F3"
-    echo ''
+    echo
     echo $"Use kbd=dvorak for dvorak keyboard before installing"
     # end tips
-    echo ''
+    echo
     echo $"Press F1 at the boot screen for Help and list of cheatcodes for live use."
 }
 
@@ -206,7 +206,7 @@ setfs() {
     6)btrfs 
     7)reiserfs
     8)reiser4 "
-    echo ''
+    echo
     ans=1
     while [[ $ans -ne 0 ]]; do
         read -p $"Enter your choice 1-8: " fs
@@ -215,9 +215,9 @@ setfs() {
         fi
         ans=0
         echo $"You have chosen $fs for $1"
-        echo ''
+        echo
         echo $"Downloading necessary files for formatting partitions"
-        echo ''
+        echo
         case $fs in
             1) mkfs.ext2 /dev/$1 > /dev/null 2>&1;;
             2) mkfs.ext3 /dev/$1 > /dev/null 2>&1;;
@@ -347,9 +347,9 @@ grub_install() {
 #Run Help
 if [[ "$1" == "-h" || "$1" == "--help" ]]; then
     help_text
-    echo ''
+    echo
     read -p $"Press Enter to exit this script."
-    echo ''
+    echo
     exit
 fi
 
@@ -358,7 +358,7 @@ if [[ $UID -ne 0 ]]; then
     echo -ne "\e[31m"
     echo $"Please run this script as root."
     echo -ne "\e[0m"
-    echo ''
+    echo
     exit
 fi
 
@@ -368,36 +368,36 @@ mkdir -p /live/aufs/dev /live/aufs/sys /live/aufs/proc
 make-fstab
 swapon -a
 # Show requirements
-echo ''
+echo
 header
-echo ''
+echo
 echo $"====Disk and partition Information===="
 partition-info all
-echo ''
-echo ''
+echo
+echo
 # Repartition or not and set up file system via cfdisk
 yn $"Do you want to repartition the disk (y/N)"
 if [[ $ans -eq 1 ]]; then
     repartition $1
     echo '===='
-    echo ''
+    echo
     getroot
-    echo ''
+    echo
     setfs $rdrv
 else
-    echo ''
+    echo
     getroot
-    echo ''
+    echo
 fi
 yn $"The installer will now destroy the data on $rdrv  Do you want to continue (No will abort the installation) (n/Y)"
-echo ''
+echo
 if [[ "$ans" -eq 0 ]]; then
     exit 0
 fi
-echo ''
+echo
 echo $"Deleting the contents of the $rdrv partition."
 echo $"This may take some time. Please wait...."
-echo ''
+echo
 mkdir /media/$rdrv > /dev/null 2>&1
 mount /dev/$rdrv /media/$rdrv > /dev/null 2>&1
 rm -r /media/${rdrv:?}/* > /dev/null 2>&1
@@ -407,38 +407,38 @@ echo
 
 # Set up separate /home and mount on /media/$hdrv
 yn $"Do you want to use a separate '/home' partition (y/N)"
-echo ''
+echo
 if [[ "$ans" -eq 1 ]]; then
     gethome
     if [[ ! (-e /media/$hdrv) ]]; then
         mkdir /media/$hdrv
     fi
-    echo ''
+    echo
     yn $"Is $hdrv a new '/home' partition (No will not destroy any data on $hdrv ) (y/N)"
-    echo ''
+    echo
     if [[ "$ans" -eq 1 ]]; then
         hmtp=2
-        echo ''
+        echo
         yn $"Set file system for $hdrv  (y/N)"
-        echo ''
+        echo
         if [[ "$ans" -eq 1 ]]; then
             setfs $hdrv
         fi
-        echo ''
+        echo
         yn $"The installer will now destroy the data on $hdrv  Do you want to continue (No will abort the install) (n/Y)"
-        echo ''
+        echo
         if [[ "$ans" -eq 0 ]]; then
             exit 0
         fi
-        echo ''
+        echo
         echo $"Deleting the contents of the $hdrv partition."
-        echo ''
+        echo
         mount /dev/$hdrv /media/$hdrv > /dev/null 2>&1
         rm -r /media/${hdrv:?}/* > /dev/null 2>&1
-        echo ''
+        echo
         echo $"Done."
-        echo ''
-        else
+        echo
+    else
         hmtp=1
         mount /dev/$hdrv /media/$hdrv
     fi
@@ -447,52 +447,52 @@ else
 fi
 getfs
 #Install grub-pc and clean out downloaded debs
-#echo ''
+#echo
 #yn $"Are you running antiX-net (y/N)"
-#echo ''
+#echo
 #if [[ $ans -eq 1 ]]
 #  then
-#echo ''
+#echo
 #echo $"Downloading grub-pc, locales, keyboard-configuration, console-setup, #console-data, lsb-release, sysv-rc-conf"
 #apt-get update && apt-get -y install grub-pc locales keyboard-configuration #console-setup console-data lsb-release sysv-rc-conf
 #apt-get -y clean
-#echo ''
+#echo
 #yn $"Do you want to install elogind and dbus-x11. RECOMMENDED if installing a #desktop environment. (y/N)"
-#echo ''
+#echo
 #if [[ $ans -eq 1 ]]
 #  then
-#echo ''
+#echo
 #echo $"Downloading elogind, libpam-elogind, dbus-x11"
 #apt-get update && apt-get -y install elogind libpam-elogind dbus-x11 && apt-get -y autoremove
 #apt-get -y clean
-#echo ''
+#echo
 #fi
 #fi
-#echo ''
+#echo
 #yn $"Do you want to install some packages via cli-aptiX (y/N)"
-#echo ''
+#echo
 #if [[ $ans -eq 1 ]]
 #  then
-#echo ''
+#echo
 #echo $"Use cli-aptiX to install various applications and/or kernels"
-#echo ''
+#echo
 #cli-aptiX
 #apt-get -y clean
-#echo ''
+#echo
 #fi
 #We are now in $rdrv
 cd /media/$rdrv || exit
-echo ''
+echo
 echo $"$DISTRO will now be copied to $rdrv."
-echo ''
+echo
 yn $"Do you want to continue (No will abort the install) (n/Y)"
-echo ''
+echo
 if [[ "$ans" -eq 0 ]]; then
     exit 0
 fi
 echo $"This may take some time. Please wait...."
 cp -a /live/aufs/* .
-echo ''
+echo
 
 #set up fstab
 echo '# Pluggable devices are handled by uDev, they are not in fstab' > etc/fstab.new
@@ -542,9 +542,9 @@ echo $"Time to set up localisation"
 echo  -ne "\e[0m"
 echo $"System locale is set to ..."
 chroot /media/$rdrv cat /etc/default/locale
-echo ''
+echo
 yn $"Do you want to set up system localisation (y/N)"
-echo ''
+echo
 if [[ $ans -eq 1 ]]; then
     chroot /media/$rdrv dpkg-reconfigure locales
 fi
@@ -553,9 +553,9 @@ echo $"Time to set keyboard layout"
 echo -ne "\e[0m"
 echo $"System keyboard is set to ..."
 chroot /media/$rdrv cat /etc/default/keyboard
-echo ''
+echo
 yn $"Do you want to set up keyboard (y/N)"
-echo ''
+echo
 if [[ $ans -eq 1 ]]; then
     chroot /media/$rdrv dpkg-reconfigure keyboard-configuration
 fi
@@ -564,9 +564,9 @@ echo $"Time to set console layout"
 echo -ne "\e[0m"
 echo $"System console is set to ..."
 chroot /media/$rdrv cat /etc/default/console-setup
-echo ''
+echo
 yn $"Do you want to set up console layout (y/N)"
-echo ''
+echo
 if [[ $ans -eq 1 ]]; then
     chroot /media/$rdrv dpkg-reconfigure console-setup
 fi
@@ -575,9 +575,9 @@ echo $"Time to set timezone"
 echo -ne "\e[0m"
 echo $"System timezone is set to ..."
 chroot /media/$rdrv cat /etc/timezone
-echo ''
+echo
 yn $"Do you want to set up system timezone (y/N)"
-echo ''
+echo
 if [[ $ans -eq 1 ]]; then
     chroot /media/$rdrv dpkg-reconfigure tzdata
 fi
@@ -587,17 +587,17 @@ echo -ne "\e[0m"
 
 command -v sysv-rc-conf >/dev/null && (
     yn $"Do you want to enable/disable startup services (y/N)"
-    echo ''
+    echo
     if [[ $ans -eq 1 ]]; then
         chroot /media/$rdrv sysv-rc-conf
     fi
-    echo ''
+    echo
     sleep 1
 )
 
-echo ''
+echo
 yn $"Is this a remastered/snapshot install (y/N)"
-echo ''
+echo
 if [[ $ans -eq 1 ]]; then
     # Write code to get buildfstab -r to start on first boot via rc.local (if user wants it?)
     #mv etc/rc.local etc/rc.local2
@@ -609,9 +609,9 @@ if [[ $ans -eq 1 ]]; then
     umount -l /media/$rdrv
     umount -l /dev/$hdrv
     echo $"Installation of $DISTRO finished!"
-    echo ''
+    echo
     echo $"Reboot computer without CD to start program. ('reboot')"
-    echo ''
+    echo
     exit
 fi
 sleep 1
@@ -624,16 +624,16 @@ while [[ -z "$name" ]]; do
 done
 case $hmtp in
     0)chroot /media/$rdrv adduser --force-badname $name;;
-    1)echo '';echo $"Note: $hdrv must contain a folder named '$name'."
+    1)echo;echo $"Note: $hdrv must contain a folder named '$name'."
     chroot /media/$rdrv adduser --force-badname $name;;
     2)chroot /media/$rdrv adduser --force-badname $name;;
 esac
-echo ''
+echo
 yn $"Setup root account? (y/N)"
-echo ''
+echo
 if [[ $ans -eq 1 ]]; then
     echo $"Type your Password for root: "
-    echo ''
+    echo
     setpw root
 else
     chroot /media/$rdrv passwd -l root
@@ -641,17 +641,17 @@ fi
 sed -i "s/$LIVEUSER/$name/" etc/group
 sed -i "s/$LIVEUSER/$name/" etc/gshadow
 sed -i "s/$LIVEUSER/$name/" usr/share/slim/themes/antiX/slim-install.conf 2>/dev/null
-echo ''
+echo
 #yn $"Set autologin for $name: (y/N)"
-#echo ''
+#echo
 #if [[ $ans -eq 1 ]]; then
 #sed -i "s/#auto_login/auto_login/" usr/share/slim/themes/antiX/slim-install.conf 2>/dev/null
 #sed -i "s/#default_user/default_user/" usr/share/slim/themes/antiX/slim-install.conf 2>/dev/null
 #fi
 # Copy live configurations to install. For all.
-echo ''
+echo
 echo $"Cleaning up"
-echo ''
+echo
 #/usr/sbin/live-to-installed /media/$rdrv
 #mv etc/rc.local etc/rc.local2
 mv etc/X11/xorg.conf etc/X11/xorg.conf.live 2>/dev/null
@@ -683,7 +683,7 @@ umount -l /media/$rdrv
 if [[ "$hmtp" -ne 0 ]]; then
     umount -l /dev/$hdrv
 fi
-echo ''
+echo
 echo $"Installation of $DISTRO finished!"
-echo ''
+echo
 echo $"Reboot computer without CD to start program. ('reboot')"
