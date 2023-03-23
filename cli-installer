@@ -233,7 +233,7 @@ setfs() {
         esac
     done
     driveCheck
-    parted --script /dev/$rpre$gdrv set $gpart flag off
+    [[ $rootbtrfs != true ]] && parted --script /dev/$rpre$gdrv set $gpart bios_grub off
 }
 
 setpw() {
