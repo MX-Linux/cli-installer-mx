@@ -291,7 +291,7 @@ grub_install() {
     if [ "$1" == 1 ]; then
         echo $"This may take some time. Please wait...."
         command -v parted >/dev/null || (apt-get update && apt-get -y install parted)
-        [[ $rootbtrfs == true ]] && if [[ $(parted /dev/$rpre$gdrv print | grep "Partition Table: gpt") ]] ; then
+        [[ $rootbtrfs == true ]] && if parted /dev/$rpre$gdrv print | grep -q "Partition Table: gpt"; then
             parted /dev/$rpre$gdrv set $gpart bios_grub on > /dev/null 2>&1
         fi
         chroot /media/$rdrv grub-install --target=i386-pc --recheck --no-floppy --force /dev/$rpre$gdrv > /dev/null  2>&1
@@ -494,7 +494,7 @@ if [[ "$ans" -eq 0 ]]; then
 fi
 echo $"This may take some time. Please wait...."
 shopt -s extglob
-if [[ $(command -v rsync) ]]; then
+if command -v rsync; then
     rsync -a --human-readable --no-inc-recursive --info=progress2 --exclude='/mnt/*' /live/aufs/ . || exit 1
 else
     cp -a /live/aufs/!(mnt) . || exit 1
@@ -509,9 +509,9 @@ echo "/dev/$rdrv / $fs1 defaults,relatime 0 1"  >>  etc/fstab.new
 grep swap etc/fstab >> etc/fstab.new
 if [[ "$hmtp" -gt 0 ]]; then
     echo "/dev/$hdrv /home $fs2 defaults,relatime 0 2" >> etc/fstab.new
-    arg1=$hdrv
-else
-    arg1='xxxx'
+#    arg1=$hdrv
+#else
+#    arg1='xxxx'
 fi
 #echo '# Dynamic entries below' >> etc/fstab.new
 #grep -v '#' etc/fstab|grep -v swap|grep -v proc|grep -v devpts|grep -v $rdrv|grep -v $arg1 >> etc/fstab.new
