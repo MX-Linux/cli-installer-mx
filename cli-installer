@@ -198,12 +198,12 @@ setfs() {
     umount /dev/$1 > /dev/null 2>&1
     echo $"Available file systems for $1 are:"
     echo "
-    1)ext2 
-    2)ext3 
-    3)ext4 
-    4)jfs 
-    5)xfs 
-    6)btrfs 
+    1)ext2
+    2)ext3
+    3)ext4
+    4)jfs
+    5)xfs
+    6)btrfs
     7)reiserfs
     8)reiser4 "
     echo
@@ -492,9 +492,10 @@ if [[ "$ans" -eq 0 ]]; then
 fi
 echo $"This may take some time. Please wait...."
 if [[ $(command -v rsync) ]]; then
-    rsync -a --human-readable --no-inc-recursive --info=progress2 /live/aufs/ .
+    rsync -a --human-readable --no-inc-recursive --info=progress2 --exclude='/mnt/*' /live/aufs/ .
 else
-    cp -a /live/aufs/* .
+    cp -a /live/aufs/!(mnt) .
+    mkdir mnt
 fi
 echo
 
