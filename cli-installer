@@ -494,7 +494,7 @@ if [[ "$ans" -eq 0 ]]; then
 fi
 echo $"This may take some time. Please wait...."
 shopt -s extglob
-if command -v rsync; then
+if command -v rsync >/dev/null; then
     rsync -a --human-readable --no-inc-recursive --info=progress2 --exclude='/mnt/*' /live/aufs/ . || exit 1
 else
     cp -a /live/aufs/!(mnt) . || exit 1
