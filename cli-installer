@@ -517,20 +517,32 @@ cp etc/gshadow etc/gshadow.bak
 echo $"File copy done"
 echo
 echo $"Where should grub be installed?"
-echo $"ESP selection will fail if not booted in legacy mode"
+#echo $"ESP selection will fail if not booted in EFI mode"
 echo $"1) MBR (Legacy - Master Boot Record)"
 echo $"2) Root Partition"
-echo $"3) ESP (EFI install)"
-while true; do
-    read -p "$*? "
-    case $REPLY in
-        1) echo $"Installing grub to the MBR" && grub_install 1;;
-        2) echo $"Installing grub to the Root Partition" && grub_install 2;;
-        3) echo $"Installing grub to the ESP" &&  grub_install 3;;
-        *) echo $"Invalid; retry:"; continue;;
-    esac
-    break
-done
+if [ -d /sys/firmware/efi/efivars ]; then
+    echo $"3) ESP (EFI install)"
+    while true; do
+        read -p "$*? "
+        case $REPLY in
+            1) echo $"Installing grub to the MBR" && grub_install 1;;
+            2) echo $"Installing grub to the Root Partition" && grub_install 2;;
+            3) echo $"Installing grub to the ESP" &&  grub_install 3;;
+            *) echo $"Invalid; retry:"; continue;;
+        esac
+        break
+    done
+else
+    while true; do
+        read -p "$*? "
+        case $REPLY in
+            1) echo $"Installing grub to the MBR" && grub_install 1;;
+            2) echo $"Installing grub to the Root Partition" && grub_install 2;;
+            *) echo $"Invalid; retry:"; continue;;
+        esac
+        break
+    done
+fi
 
 echo
 chroot /media/$rdrv userdel $LIVEUSER
