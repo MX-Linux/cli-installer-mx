@@ -266,8 +266,8 @@ yn() {
 }
 
 getfs() {
-    fs1=$(blkid /dev/$rdrv $a|sed -e "s/.*TYPE=\"//"|sed -e "s/\".*//")
-    fs2=$(blkid /dev/$hdrv $a|sed -e "s/.*TYPE=\"//"|sed -e "s/\".*//")
+    fs1=$(blkid /dev/$rdrv | sed 's/.*TYPE="\([^"]*\)".*/\1/')
+    fs2=$(blkid /dev/$hdrv | sed 's/.*TYPE="\([^"]*\)".*/\1/')
 }
 
 grub_install() {
@@ -432,7 +432,7 @@ if [[ "$ans" -eq 1 ]]; then
         echo $"Deleting the contents of the $hdrv partition."
         echo ''
         mount /dev/$hdrv /media/$hdrv > /dev/null 2>&1
-        rm -r /media/$hdrv/* > /dev/null 2>&1
+        rm -r /media/${hdrv:?}/* > /dev/null 2>&1
         echo ''
         echo $"Done."
         echo ''
