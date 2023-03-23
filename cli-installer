@@ -491,12 +491,14 @@ if [[ "$ans" -eq 0 ]]; then
     exit 0
 fi
 echo $"This may take some time. Please wait...."
+shopt -s extglob
 if [[ $(command -v rsync) ]]; then
     rsync -a --human-readable --no-inc-recursive --info=progress2 --exclude='/mnt/*' /live/aufs/ .
 else
     cp -a /live/aufs/!(mnt) .
     mkdir mnt
 fi
+shopt -u extglob
 echo
 
 #set up fstab
