@@ -234,7 +234,7 @@ setfs() {
     done
     driveCheck
     command -v parted >/dev/null || (apt-get update && apt-get -y install parted)
-    [[ $rootbtrfs != true ]] && parted --script /dev/$rpre$gdrv set $gpart bios_grub off
+    [[ $rootbtrfs != true ]] && parted --script /dev/$rpre$gdrv set $gpart bios_grub off > /dev/null 2>&1
 }
 
 setpw() {
