@@ -6,23 +6,22 @@
 export TEXTDOMAINDIR=/usr/share/locale
 export TEXTDOMAIN=cli-installer
 
-#Default
+# Default
 DISTRO=MX-Linux
 LIVEUSER=demo
 
-##functions
-#title
-#header
-#help_text
-#gethome
-#getroot
-#repartition
-#setfs
-#setpw
-#yn(yes/no)
-#getfs
-#encrypt
-
+## functions
+# title
+# header
+# help_text
+# gethome
+# getroot
+# repartition
+# setfs
+# setpw
+# yn(yes/no)
+# getfs
+# encrypt
 
 title() {
     echo -ne "\e[32m"
@@ -83,7 +82,7 @@ help_text() {
 }
 
 driveCheck() {
-    #Check for valid known drive device name schema
+    # Check for valid known drive device name schema
     drive=$1
     case $drive in
     hd*|sd*|vd*)
@@ -135,7 +134,7 @@ gethome() {
 
         driveCheck $hdrv
 
-        if [[ ("$hdrv" == "$rdrv") || ("$hdrv" != "$dcResult") || !  -b "/dev/$hdrv" ]]; then
+        if [[ ("$hdrv" == "$rdrv") || ("$hdrv" != "$dcResult") || ! -b "/dev/$hdrv" ]]; then
             echo $"$hdrv invalid. Retry:"
             continue
         fi
@@ -176,7 +175,7 @@ getesp() {
 
         driveCheck $espdrv
 
-        if [[ ("$espdrv" == "$rdrv") || ("$espdrv" == "$hdrv") || ("$espdrv" != "$dcResult") || ! ( -b "/dev/$espdrv" ) ]]; then
+        if [[ ("$espdrv" == "$rdrv") || ("$espdrv" == "$hdrv") || ("$espdrv" != "$dcResult") || ! -b "/dev/$espdrv" ]]; then
             echo $"$espdrv invalid. Retry"
         else
             echo "Using $espdrv as the ESP partition"
@@ -226,8 +225,7 @@ setfs() {
             5) command -v mkfs.xfs >/dev/null || (apt-get update && apt-get -y install xfsprogs) && mkfs.xfs -f /dev/$1 > /dev/null 2>&1;;
             6) command -v mkfs.btrfs >/dev/null || (apt-get update && apt-get -y install btrfs-progs) && rootbtrfs=true; mkfs.btrfs -f /dev/$1 > /dev/null 2>&1;;
             7) command -v mkreiserfs >/dev/null || (apt-get update && apt-get -y install reiserfsprogs) && mkreiserfs -q /dev/$1 > /dev/null 2>&1;;
-            8) command -v mkfs.resier4 >/dev/null || (apt-get update && apt-get -y install reiser4progs) && mkfs.reiser4 -f -y /dev/$1 > /dev/null 2>&1
-
+            8) command -v mkfs.reiser4 >/dev/null || (apt-get update && apt-get -y install reiser4progs) && mkfs.reiser4 -f -y /dev/$1 > /dev/null 2>&1
             echo $"Ignore any 'barrier' lines";;
             *) echo $"$fs invalid. Retry:"; ans=1;;
         esac
@@ -277,7 +275,7 @@ grub_install() {
 
     local XTRA_PARMS=""
 
-    #mount system directories to make chroot for grub
+    # Mount system directories to make chroot for grub
     mount -o tmpfs --bind /dev/ /media/$rdrv/dev/
     mount -o proc --bind /proc/ /media/$rdrv/proc/
     mount -o sysfs --bind /sys/ /media/$rdrv/sys/
@@ -288,8 +286,8 @@ grub_install() {
     #cmdline="quiet $cmdline"
     #sed -r -i "s|^(GRUB_CMDLINE_LINUX_DEFAULT=).*|\1\$$cmdline|" /media/$rdrv/etc/default/grub
 
-    #Install grub
-    #1=MBR, 2=Root Partion, 3=ESP
+    # Install grub
+    # 1=MBR, 2=Root Partion, 3=ESP
     echo
     if [ "$1" == 1 ]; then
         echo $"This may take some time. Please wait...."
@@ -306,22 +304,22 @@ grub_install() {
             command -v mkfs.fat >/dev/null || (sudo apt-get update && sudo apt-get -y install dosfstools) && mkfs.fat /dev/$espdrv
         fi
 
-        mount /dev/$espdrv /media/$rdrv/boot/efi;
-        #check if the UEFI boot NVRAM should be updated
+        mount /dev/$espdrv /media/$rdrv/boot/efi
+        # Check if the UEFI boot NVRAM should be updated
         yn $"Do you want the UEFI Boot NVRAM updated? (y/N)"
         if [[ "$ans" -eq 0 ]]; then
             XTRA_PARMS="--no-nvram"
         fi
 
-        #What os architecture are we running?
+        # What os architecture are we running?
         case $(cat /sys/firmware/efi/fw_platform_size) in
             32)
-                arch="i386";
-                cp /live/boot-dev/boot/uefi-mt/mtest-32.efi /media/$rdrv/boot/uefi-mt;
+                arch="i386"
+                cp /live/boot-dev/boot/uefi-mt/mtest-32.efi /media/$rdrv/boot/uefi-mt
                 ;;
             64)
-                arch="x86_64";
-                cp /live/boot-dev/boot/uefi-mt/mtest-64.efi /media/$rdrv/boot/uefi-mt;
+                arch="x86_64"
+                cp /live/boot-dev/boot/uefi-mt/mtest-64.efi /media/$rdrv/boot/uefi-mt
                 ;;
         esac
 
@@ -333,22 +331,22 @@ grub_install() {
         chroot /media/$rdrv grub-install --target=i386-pc --recheck --no-floppy --force /dev/$rdrv > /dev/null  2>&1
     fi
 
-    #Update grub after installation to generate menus
+    # Update grub after installation to generate menus
     chroot /media/$rdrv update-grub > /dev/null  2>&1
 
-    #Make fstab entries and convert from device names to uuid
+    # Make fstab entries and convert from device names to uuid
     #/sbin/make-fstab --install /media/$rdrv --mntpnt=/media > /dev/null  2>&1  ### THIS IS DONE EARLIER IN THE SCRIPT
     chroot /media/$rdrv dev2uuid_fstab > /dev/null  2>&1
 
-    #Update init
-    chroot /media/$rdrv update-initramfs -u -t -k all> /dev/null  2>&1
+    # Update init
+    chroot /media/$rdrv update-initramfs -u -t -k all > /dev/null  2>&1
 
     echo $"GRUB installed"
 }
 
 ##End of functions
 
-#Run Help
+# Run Help
 if [[ "$1" == "-h" || "$1" == "--help" ]]; then
     help_text
     echo
@@ -505,7 +503,7 @@ fi
 shopt -u extglob
 echo
 
-#set up fstab
+# Set up fstab
 echo '# Pluggable devices are handled by uDev, they are not in fstab' > etc/fstab.new
 echo "/dev/$rdrv / $fs1 defaults,relatime 0 1"  >>  etc/fstab.new
 grep swap etc/fstab >> etc/fstab.new
