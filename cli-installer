@@ -124,6 +124,16 @@ driveCheck() {
         fi
     ;;
 
+    xvd*|xvda*) # Qubes drives
+        rpre="${drive:0:3}"
+        if [[ ${drive:3:1} =~ [a-z] ]]; then
+            gdrv="${drive:3:1}"
+            if [[ ${drive:4:2} =~ ([1-9]?[0-9]) ]]; then
+                gpart="${drive:4:2}"
+            fi
+        fi
+    ;;
+
     esac
     dcResult="$rpre$gdrv$gpart"
 }
