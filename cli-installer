@@ -531,6 +531,13 @@ cp etc/group etc/group.bak
 cp etc/gshadow etc/gshadow.bak
 echo $"File copy done"
 echo
+
+# Check if grub-install is available
+if ! command -v grub-install >/dev/null; then
+    echo $"grub-install command not found. Installing grub package..."
+    apt-get update && apt-get -y install grub2-common grub-pc
+fi
+
 echo $"Where should grub be installed?"
 #echo $"ESP selection will fail if not booted in EFI mode"
 echo $"1) MBR (Legacy - Master Boot Record)"
