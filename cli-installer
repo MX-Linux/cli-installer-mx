@@ -278,6 +278,17 @@ getfs() {
     fs2=$(blkid /dev/"$hdrv" | sed 's/.*TYPE="\([^"]*\)".*/\1/')
 }
 
+prepare_esp() {
+    mkdir -p /media/"$rdrv"/boot/efi
+    mkdir -p /media/"$rdrv"/boot/uefi-mt
+    get_esp
+    yn $"Format the ESP partition? (y/N)"
+    if [[ "$ans" -eq 1 ]]; then
+        command -v mkfs.fat >/dev/null || (apt-get update && apt-get -y install dosfstools) && mkfs.fat /dev/"$espdrv"
+    fi
+    mount /dev/"$espdrv" /media/"$rdrv"/boot/efi
+}
+
 grub_install() {
     local XTRA_PARMS=""
 
@@ -293,7 +304,7 @@ grub_install() {
     #sed -r -i "s|^(GRUB_CMDLINE_LINUX_DEFAULT=).*|\1\$$cmdline|" /media/$rdrv/etc/default/grub
 
     # Install grub
-    # 1=MBR, 2=Root Partion, 3=ESP
+    # 1=MBR, 2=Root Partion, 3=ESP, 4=EFI Stub
     echo
     if [ "$1" == 1 ]; then
         echo $"This may take some time. Please wait...."
@@ -301,16 +312,13 @@ grub_install() {
             parted --script /dev/"$rpre$gdrv" set "$gpart" bios_grub on > /dev/null 2>&1
         fi
         chroot /media/"$rdrv" grub-install --target=i386-pc --recheck --no-floppy --force /dev/"$rpre$gdrv" > /dev/null  2>&1
+        chroot /media/"$rdrv" update-grub > /dev/null  2>&1
+    elif [ "$1" == 2 ]; then
+        echo $"This may take some time. Please wait...."
+        chroot /media/"$rdrv" grub-install --target=i386-pc --recheck --no-floppy --force /dev/"$rdrv" > /dev/null  2>&1
+        chroot /media/"$rdrv" update-grub > /dev/null  2>&1
     elif [ "$1" == 3 ]; then
-        mkdir -p /media/"$rdrv"/boot/efi
-        mkdir -p /media/"$rdrv"/boot/uefi-mt
-        get_esp
-        yn $"Format the ESP partition? (y/N)"
-        if [[ "$ans" -eq 1 ]]; then
-            command -v mkfs.fat >/dev/null || (apt-get update && apt-get -y install dosfstools) && mkfs.fat /dev/"$espdrv"
-        fi
-
-        mount /dev/"$espdrv" /media/"$rdrv"/boot/efi
+        prepare_esp
         # Check if the UEFI boot NVRAM should be updated
         yn $"Do you want the UEFI Boot NVRAM updated? (y/N)"
         if [[ "$ans" -eq 0 ]]; then
@@ -332,14 +340,11 @@ grub_install() {
         echo
         echo $"This may take some time. Please wait...."
         chroot /media/"$rdrv" grub-install $XTRA_PARMS --force-extra-removable --target="$arch-efi" --efi-directory=/boot/efi --bootloader-id="$DISTRO" --recheck
-    elif [ "$1" == 2 ]; then
-        echo $"This may take some time. Please wait...."
-        chroot /media/"$rdrv" grub-install --target=i386-pc --recheck --no-floppy --force /dev/"$rdrv" > /dev/null  2>&1
+        chroot /media/"$rdrv" update-grub > /dev/null  2>&1
+    elif [ "$1" == 4 ]; then
+        prepare_esp
+        efi_stub_install
     fi
-
-    # Update grub after installation to generate menus
-    chroot /media/"$rdrv" update-grub > /dev/null  2>&1
-
     # Make fstab entries and convert from device names to uuid
     #/sbin/make-fstab --install /media/$rdrv --mntpnt=/media > /dev/null  2>&1  ### THIS IS DONE EARLIER IN THE SCRIPT
     chroot /media/"$rdrv" dev2uuid_fstab > /dev/null  2>&1
@@ -347,7 +352,7 @@ grub_install() {
     # Update initramfs
     chroot /media/"$rdrv" update-initramfs -u -t -k all > /dev/null  2>&1
 
-    echo $"GRUB installed"
+    echo $"Bootloader installed"
 }
 
 check_root_user() {
@@ -526,21 +531,187 @@ setup_fstab() {
     echo
 }
 
+copy_kernel_files() {
+    local kernelVersion sourceDir targetPath vmlinuz initrd initramfs amdUcode intelUcode filesToCopy targetFiles file targetFile
+
+    kernelVersion=$(uname -r)
+    sourceDir="/boot"
+    targetPath="/media/$rdrv/boot/efi/$DISTRO/stub"
+    mkdir -p "$targetPath"
+
+    vmlinuz="$sourceDir/vmlinuz-$kernelVersion"
+    initrd="$sourceDir/initrd.img-$kernelVersion"
+    initramfs="$sourceDir/initramfs-$kernelVersion.img"
+    amdUcode="$sourceDir/amd-ucode.img"
+    intelUcode="$sourceDir/intel-ucode.img"
+
+    # Define arrays for files to copy
+    filesToCopy=("$vmlinuz" "$initrd" "$amdUcode" "$intelUcode")
+    targetFiles=("/vmlinuz" "/initrd.img" "/amducode.img" "/intucode.img")
+
+    # Copy each file
+    for i in {0..3}; do
+        file="${filesToCopy[$i]}"
+        targetFile="$targetPath${targetFiles[$i]}"
+
+        # Check if we need to use initramfs instead of initrd
+        if [[ "$targetFile" == *"initrd.img" && ! -f "$initrd" && -f "$initramfs" ]]; then
+            file="$initramfs"
+        fi
+
+        # Skip microcode files if they don't exist
+        if [[ ! -f "$file" && "$file" == *"ucode.img" ]]; then
+            continue
+        fi
+
+        # Check if required files exist
+        if [[ ! -f "$file" && "$file" != *"ucode.img" ]]; then
+            echo "Source file does not exist: $file"
+            return 1
+        fi
+
+        # Copy the file
+        if ! cp "$file" "$targetFile"; then
+            echo "Failed to copy file: $file to $targetFile"
+            return 1
+        fi
+    done
+
+    echo "Kernel files copied successfully"
+    return 0
+}
+
+read_boot_options() {
+    local bootOptions
+    bootOptions=$(/live/bin/non-live-cmdline | sed -e 's/\\/\\\\/' -e 's/[|]/\\|/')
+    echo "$bootOptions"
+}
+
+efi_stub_install() {
+    # Check if efibootmgr is installed
+    if ! command -v efibootmgr >/dev/null; then
+        set_yellow_color
+        echo $"efibootmgr not found: required for EFI stub installation"
+        reset_color
+        echo
+        yn $"Do you want to install efibootmgr now? (n/Y)"
+        if [[ "$ans" -eq 0 ]]; then
+            echo $"Skipping efibootmgr installation"
+            echo $"EFI stub installation cannot proceed without efibootmgr"
+            return 1
+        else
+            echo $"Installing efibootmgr..."
+            if ! (apt-get update && apt-get install -y efibootmgr); then
+                set_red_color
+                echo $"Failed to install efibootmgr"
+                reset_color
+                echo $"EFI stub installation cannot proceed"
+                return 1
+            fi
+            echo $"efibootmgr installed successfully"
+        fi
+    fi
+
+    if ! copy_kernel_files; then
+        echo $"EFI stub installation failed"
+        return 1
+    fi
+    # Set directory name for EFI stub installation
+    local efiDir entryName
+    efiDir="stub"
+    entryName="${DISTRO} EFI stub"
+
+    # Get ESP mount point
+    local espPath
+    espPath="/media/$rdrv/boot/efi/EFI/$DISTRO/$efiDir"
+
+    # Get disk and partition from espdrv
+    local disk part
+    disk=${espdrv//[0-9]/}
+    part=${espdrv##*[!0-9]}
+
+    # Define paths for EFI references
+    local initrdEfi amdUcodeEfi intUcodeEfi
+    initrdEfi="initrd=\\EFI\\$DISTRO\\$efiDir\\initrd.img"
+    amdUcodeEfi="initrd=\\EFI\\$DISTRO\\$efiDir\\amducode.img"
+    intUcodeEfi="initrd=\\EFI\\$DISTRO\\$efiDir\\intucode.img"
+
+    # Check for microcode files
+    initrd=""
+    if [ -f "$espPath/amducode.img" ]; then
+        initrd="$amdUcodeEfi"
+    fi
+
+    if [ -f "$espPath/intucode.img" ]; then
+        if [ -z "$initrd" ]; then
+            initrd="$intUcodeEfi"
+        else
+            initrd="$initrd $intUcodeEfi"
+        fi
+    fi
+
+    # Always add the main initrd
+    if [ -z "$initrd" ]; then
+        initrd="$initrdEfi"
+    else
+        initrd="$initrd $initrdEfi"
+    fi
+
+    # Set boot options
+    local bootOptions
+    bootOptions="root=UUID=$(blkid -s UUID -o value /dev/"$rdrv") $(read_boot_options) $initrd"
+    echo "Boot options: $bootOptions"
+
+    # Create the EFI boot entry
+    echo $"Creating EFI boot entry..."
+    if ! efibootmgr --disk "/dev/$disk" --part "$part" --create \
+        --label "$entryName" --loader "\\EFI\\$DISTRO\\$efiDir\\vmlinuz" \
+        --unicode "$bootOptions"; then
+        echo $"Failed to create EFI boot entry"
+        return 1
+    fi
+
+    echo $"EFI stub installation completed successfully"
+}
+
 install_bootloader() {
+    # Check if system is EFI
+    local is_efi has_grub
+    is_efi=false
+    [ -d /sys/firmware/efi/efivars ] && is_efi=true
+
+    # Check if grub-install is available
+    has_grub=false
+    command -v grub-install >/dev/null && has_grub=true
+
+    # If neither EFI nor grub-install is available, skip bootloader installation
+    if ! $is_efi && ! $has_grub; then
+        set_yellow_color
+        echo $"Skipping bootloader installation: neither EFI nor grub-install is available"
+        reset_color
+        return
+    fi
+
+    # If EFI is available but grub-install is not, only do stub install
+    if $is_efi && ! $has_grub; then
+        echo $"No grub-install available, performing EFI stub installation only"
+        efi_stub_install
+        return
+    fi
+
+    # Normal installation with options
     echo $"Where should grub be installed?"
     echo $"1) MBR (Legacy - Master Boot Record)"
     echo $"2) Root Partition"
 
-    # Check if system is EFI
-    is_efi=false
-    [ -d /sys/firmware/efi/efivars ] && is_efi=true
-
-    # Show EFI option if available
-    $is_efi && echo $"3) ESP (EFI install)"
-
-    # Set max choice based on system type
+    local max_choice choice
     max_choice=2
-    $is_efi && max_choice=3
+    # Show EFI options if available
+    if $is_efi; then
+        echo $"3) ESP (EFI install)"
+        echo $"4) Do a EFI stub installation (no grub)?"
+        max_choice=4
+    fi
 
     # Get user choice
     while true; do
@@ -551,6 +722,7 @@ install_bootloader() {
                 1) echo $"Installing grub to the MBR";;
                 2) echo $"Installing grub to the Root Partition";;
                 3) echo $"Installing grub to the ESP";;
+                4) echo $"Performing EFI stub installation";;
             esac
             grub_install "$choice"
             break
@@ -563,12 +735,11 @@ install_bootloader() {
 setup_hostname() {
     echo
     chroot /media/"$rdrv" userdel "$LIVEUSER"
-    rm -r home/"$LIVEUSER" > /dev/null  2>&1
+    rm -r /media/"$rdrv"/home/"$LIVEUSER" > /dev/null 2>&1
     read -rp $"Computer name (default is 'mx1')? " cnam
-    name=""
     if [[ -n "$cnam" ]]; then
-        echo "$cnam" > etc/hostname
-        sed -i "s/mx1/$cnam/" etc/hosts
+        echo "$cnam" > /media/"$rdrv"/etc/hostname
+        sed -i "s/mx1/$cnam/" /media/"$rdrv"/etc/hosts
     fi
 }
 
