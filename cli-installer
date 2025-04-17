@@ -307,7 +307,7 @@ set_fs() {
     [[ $root_btrfs != true ]] && parted --script /dev/"$root_prefix$group_drv" set "$group_part" bios_grub off > /dev/null 2>&1
 }
 
-setpw() {
+set_password() {
     ans=1
     while [[ $ans -ne 0 ]]; do
         if (chroot /media/"$root_drv" passwd "$1"); then
@@ -345,7 +345,7 @@ yn() {
     done
 }
 
-getfs() {
+get_fs() {
     root_fs=$(blkid /dev/"$root_drv" | sed 's/.*TYPE="\([^"]*\)".*/\1/')
     home_fs=$(blkid /dev/"$home_drv" | sed 's/.*TYPE="\([^"]*\)".*/\1/')
 }
@@ -567,7 +567,7 @@ setup_home_partition() {
     else
         home_mount_type=0 # No separate /home partition
     fi
-    getfs
+    get_fs
 }
 
 copy_system_files() {
@@ -932,7 +932,7 @@ setup_user_accounts() {
     if [[ "$ans" -eq 1 ]]; then
         echo $"Type your Password for root: "
         echo
-        setpw root
+        set_password root
     else
         chroot /media/"$root_drv" passwd -l root
     fi
