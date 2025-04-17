@@ -1,14 +1,21 @@
 #!/usr/bin/env bash
-# cli-installer for antiX
+# cli-installer for antiX and MX-Linux
 # written by Burt Holland
 # heavily edited by anticapitalista
+# heavily edited by MX-Linux
 
 export TEXTDOMAINDIR=/usr/share/locale
 export TEXTDOMAIN=cli-installer
 
 # Default
-DISTRO=MX-Linux
 LIVEUSER=demo
+VERSION=2025.04.17
+
+# Distro specific variables
+DISTRO=MX-Linux
+PACKAGE_NAME=cli-installer-mx
+CHANGELOG_URL=https://raw.githubusercontent.com/MX-Linux/cli-installer-mx/main/debian/changelog
+DOWNLOAD_URL=https://github.com/MX-Linux/cli-installer-mx
 
 reset_color() { echo -ne "\e[0m"; }
 set_blue_color() { echo -ne "\e[34m"; }
@@ -20,7 +27,7 @@ set_yellow_color() { echo -ne "\e[33m"; }
 title() {
     set_green_color
     echo $"CLI installer for $DISTRO"
-    echo $"Version 2025.04.16"
+    echo $"Version $VERSION"
     reset_color
     echo
 }
@@ -50,9 +57,11 @@ header() {
     echo
     echo $"Press Ctrl+C to abort this script"
     echo
+
 }
 
 help_text() {
+    title
     echo $"Usage: cli-installer [drive]"
     echo $"Where drive is the name of the drive $DISTRO is to be installed on."
     echo $"   For example: cli-installer sdb"
@@ -73,6 +82,69 @@ help_text() {
     # End tips
     echo
     echo $"Press F1 at the boot screen for Help and list of cheatcodes for live use."
+}
+
+check_network_connection() {
+    NETWORK=true
+    if ! ping -n -w3 -c1 1.1.1.1 > /dev/null 2>&1; then
+        NETWORK=false
+        set_yellow_color
+        echo $"No internet connection. It's recommended to exit, setup a connection and run the script again."
+        yn $"Do you want to continue? (y/N)"
+        reset_color
+        echo
+        if [[ "$ans" -eq 1 ]]; then
+            echo $"Continuing..."
+            echo
+        else
+            echo $"Exiting..."
+            exit 1
+        fi
+    fi
+}
+
+check_version() {
+    if ! command -v curl >/dev/null; then
+        echo $"Installing curl..."
+        if ! ($NETWORK && apt-get update && apt-get -y install curl); then
+            set_yellow_color
+            echo $"Failed to install curl. Version checking will be skipped."
+            reset_color
+            echo
+            return
+        fi
+    fi
+    latest_version=$($NETWORK && curl -s --max-time 3 $CHANGELOG_URL | head -n 1 | awk '{print $2}' | tr -d '()')
+    if [[ -z "$latest_version" ]]; then
+        set_yellow_color
+        echo $"Failed to retrieve the latest version. Please check your internet connection."
+        reset_color
+        echo
+        return
+    fi
+
+    installed_version=$(dpkg-query -W -f='${Version}' $PACKAGE_NAME 2>/dev/null)
+
+    # Compare versions
+    if dpkg --compare-versions "$installed_version" lt "$latest_version"; then
+        echo $"A newer version of $PACKAGE_NAME is available: $latest_version"
+        echo $"You have version: $installed_version"
+        echo $"Please update to the latest version before proceeding."
+        echo $"You can update to the latest version by running:"
+        echo $"sudo apt-get update && sudo apt-get install $PACKAGE_NAME"
+        echo $"Or, you can download the latest version from:" "$DOWNLOAD_URL"
+        echo
+        yn $"Do you want to continue with the current version anyway? (n/Y)"
+        if [[ "$ans" -eq 0 ]]; then
+            echo $"Installation aborted. Please update $PACKAGE_NAME first."
+            exit 1
+        else
+            set_yellow_color
+            echo $"Continuing with current version. Some features may not work correctly."
+            reset_color
+            echo
+        fi
+    fi
 }
 
 drive_check() {
@@ -224,14 +296,14 @@ set_fs() {
             1) mkfs.ext2 /dev/"$1" > /dev/null 2>&1;;
             2) mkfs.ext3 /dev/"$1" > /dev/null 2>&1;;
             3) mkfs.ext4 /dev/"$1" > /dev/null 2>&1;;
-            4) command -v mkfs.jfs >/dev/null || (apt-get update && apt-get -y install jfsutils) && mkfs.jfs -q /dev/"$1" > /dev/null 2>&1;;
-            5) command -v mkfs.xfs >/dev/null || (apt-get update && apt-get -y install xfsprogs) && mkfs.xfs -f /dev/"$1" > /dev/null 2>&1;;
-            6) command -v mkfs.btrfs >/dev/null || (apt-get update && apt-get -y install btrfs-progs) && root_btrfs=true; mkfs.btrfs -f /dev/"$1" > /dev/null 2>&1;;
+            4) command -v mkfs.jfs >/dev/null || ($NETWORK && apt-get update && apt-get -y install jfsutils) && mkfs.jfs -q /dev/"$1" > /dev/null 2>&1;;
+            5) command -v mkfs.xfs >/dev/null || ($NETWORK && apt-get update && apt-get -y install xfsprogs) && mkfs.xfs -f /dev/"$1" > /dev/null 2>&1;;
+            6) command -v mkfs.btrfs >/dev/null || ($NETWORK && apt-get update && apt-get -y install btrfs-progs) && root_btrfs=true; mkfs.btrfs -f /dev/"$1" > /dev/null 2>&1;;
             *) echo $"$fs invalid. Retry:"; ans=1;;
         esac
     done
     drive_check
-    command -v parted >/dev/null || (apt-get update && apt-get -y install parted)
+    command -v parted >/dev/null || ($NETWORK && apt-get update && apt-get -y install parted)
     [[ $root_btrfs != true ]] && parted --script /dev/"$root_prefix$group_drv" set "$group_part" bios_grub off > /dev/null 2>&1
 }
 
@@ -284,7 +356,7 @@ prepare_esp() {
     get_esp
     yn $"Format the ESP partition? (y/N)"
     if [[ "$ans" -eq 1 ]]; then
-        command -v mkfs.fat >/dev/null || (apt-get update && apt-get -y install dosfstools) && mkfs.fat /dev/"$esp_drv"
+        command -v mkfs.fat >/dev/null || ($NETWORK && apt-get update && apt-get -y install dosfstools) && mkfs.fat /dev/"$esp_drv"
     fi
     mount /dev/"$esp_drv" /media/"$root_drv"/boot/efi
 }
@@ -373,7 +445,6 @@ check_root_user() {
         echo $"Elevated privileges successfully."
         echo
     fi
-
 }
 
 setup_environment() {
@@ -396,7 +467,7 @@ check_grub_install() {
             echo $"manually after installation or the system may not boot."
         else
             echo $"Installing GRUB packages..."
-            if apt-get update && apt-get -y install grub2; then
+            if $NETWORK && apt-get update && apt-get -y install grub2; then
                 echo $"GRUB installation completed successfully."
             else
                 set_red_color
@@ -605,7 +676,7 @@ efi_stub_install() {
             return 1
         else
             echo $"Installing efibootmgr..."
-            if ! (apt-get update && apt-get install -y efibootmgr); then
+            if ! ($NETWORK && apt-get update && apt-get install -y efibootmgr); then
                 set_red_color
                 echo $"Failed to install efibootmgr"
                 reset_color
@@ -925,6 +996,9 @@ main() {
     fi
 
     check_root_user
+    title
+    check_network_connection
+    check_version
     setup_environment
     show_disk_info
     handle_partitioning "$1"
