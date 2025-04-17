@@ -885,6 +885,7 @@ cleanup_and_finalize() {
     cp -r etc/skel/.[a-zA-Z]* home/*/ 2>/dev/null
     cp -r etc/skel/* home/*/ 2>/dev/null
     rm -R etc/live/*
+    sed -i '2,$d' /media/"$root_drv"/etc/issue
     if [[ "$home_mount_type" -gt 0 ]]; then
         if [[ "$home_mount_type" -eq 2 ]]; then
             mv home/* /media/"$home_drv"
