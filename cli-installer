@@ -130,6 +130,7 @@ check_version() {
         echo $"A newer version of $PACKAGE_NAME is available: $latest_version"
         echo $"You have version: $installed_version"
         echo $"Please update to the latest version before proceeding."
+        echo
         echo $"You can update to the latest version by running:"
         echo $"sudo apt-get update && sudo apt-get install $PACKAGE_NAME"
         echo $"Or, you can download the latest version from:" "$DOWNLOAD_URL"
@@ -696,6 +697,12 @@ efi_stub_install() {
     efi_dir="stub"
     entry_name="${DISTRO} EFI stub"
 
+    # Prompt for EFI boot entry name
+    read -rp $"Enter a name for the EFI boot entry (default: $entry_name):" custom_entry_name
+    if [ -n "$custom_entry_name" ]; then
+        entry_name="$custom_entry_name"
+    fi
+
     # Get ESP mount point
     local esp_path
     esp_path="/media/$root_drv/boot/efi/EFI/$DISTRO/$efi_dir"
@@ -789,7 +796,7 @@ install_bootloader() {
 
     # Get user choice
     while true; do
-        read -rp "Enter your choice (1-$max_install_choice): " install_choice
+        read -rp $"Enter your choice (1-$max_install_choice): " install_choice
 
         if [[ "$install_choice" -ge 1 && "$install_choice" -le "$max_install_choice" ]]; then
             case $install_choice in
