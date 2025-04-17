@@ -1,0 +1,51 @@
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA512
+
+Format: 1.8
+Date: Wed, 16 Apr 2025 20:39:08 -0400
+Source: cli-installer-mx
+Binary: cli-installer-mx
+Architecture: source all
+Version: 25.4
+Distribution: mx
+Urgency: medium
+Maintainer: dolphinoracle <dolphinoracle@gmail.com>
+Changed-By: Adrian <adrian@mxlinux.org>
+Description:
+ cli-installer-mx - Script to install mx to hard drive via cli.
+Changes:
+ cli-installer-mx (25.4) mx; urgency=medium
+ .
+   * Script autoelevates if needed
+   * Install GRUB and efibootmgr when needed
+   * Provide an EFI stub installation option (no need for GRUB)
+   * Remove instructions about running the installer at the
+     end of installation from /etc/issue
+   * Remove reiserfs reiser4 format options
+Checksums-Sha1:
+ d7f64b4389c066001a5d59b8a61c63344f76ce4e 1193 cli-installer-mx_25.4.dsc
+ e23c1560a2e529f56295594112705d130cc7f900 68876 cli-installer-mx_25.4.tar.xz
+ 0643a25429addcf0e88e26ea896230b14f6a4e90 51172 cli-installer-mx_25.4_all.deb
+ 0b281f0402943e36951b50a28794f9043c4aa184 5714 cli-installer-mx_25.4_amd64.buildinfo
+Checksums-Sha256:
+ 8ece8fcfcdf3b211286e1162c79c8ba05305b30990f00dc5557303558e0a67f4 1193 cli-installer-mx_25.4.dsc
+ 4efe4a93a93f6888f21bb2ae54e31e95cb418443812764844dd9e82bdb0390e7 68876 cli-installer-mx_25.4.tar.xz
+ e2306c802485a5bde8833fefa99d19214d944f050f3fddbd1b3c7a7706424664 51172 cli-installer-mx_25.4_all.deb
+ 35379f8b2ae59fa00bc1c8f57104c557018ff23ecf42243927f372a160ce30fa 5714 cli-installer-mx_25.4_amd64.buildinfo
+Files:
+ 3951ba4a1e2531569d0d373a6e832f71 1193 system optional cli-installer-mx_25.4.dsc
+ 1d7eb91961232efaf1cfc439543058af 68876 system optional cli-installer-mx_25.4.tar.xz
+ f41ce3cdb7ce79cef8d2154cf0846e38 51172 system optional cli-installer-mx_25.4_all.deb
+ 3f12d6332cb81aa8d3b94f23e66e9ea2 5714 system optional cli-installer-mx_25.4_amd64.buildinfo
+
+-----BEGIN PGP SIGNATURE-----
+
+iQFHBAEBCgAxFiEE8ndToY6S45N+YzXncJOMeAZ57pgFAmgAT90THGFkcmlhbkBt
+eGxpbnV4Lm9yZwAKCRBwk4x4BnnumFcrB/4gVxdV3O/Qc0MGvz7YTBD3JdDfTqrA
+fmnqsHMcINEDFzCVDDSAx4B1bwaHvz9XEOlfBGMLHQ4EGIvRtEQKL2QZ1JngTlBL
+pd2oN77Nh1U5Dq/7J6D8rArKKeVAExhUwkHcvX/y6hRbhBYQgaMRBWaM18mKBaj7
+oqYhCgc12TOifjvxnBuWFgt9dVqqwbdJwjqxV2Lp8j3sEK7d+8ulgrCM6U59mh4L
++U742eLYnJeBZuuQZlSqW1rt4u8EkI3aeB5crAS9S1Sob6Kg8ivVSbbUUbv8i7n+
+DWdfybkYCw8S2hfoCOypVTELQVjsq7JM2gDQaNK/26vCZzKC8KTrWwAJ
+=dMEG
+-----END PGP SIGNATURE-----
