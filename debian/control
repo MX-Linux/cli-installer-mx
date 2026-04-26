@@ -3,7 +3,7 @@ Section: system
 Priority: optional
 Maintainer: dolphinoracle <dolphinoracle@gmail.com>
 Build-Depends: debhelper-compat (= 13)
-Standards-Version: 3.9.8
+Standards-Version: 4.5.1
 Homepage: https://gitlab.com/MX-Linux/cli-installer-mx
 Vcs-Git: https://gitlab.com/MX-Linux/cli-installer-mx.git
 Vcs-Browser: https://gitlab.com/MX-Linux/cli-installer-mx
